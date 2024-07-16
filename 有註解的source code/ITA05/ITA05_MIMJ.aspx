@@ -1,0 +1,1 @@
+﻿<%@ Page language="c#" validateRequest="false" CodeFile="ITA05_MIMJ.aspx.cs" AutoEventWireup="false" Inherits="tw.com.dsc.easyflowDotNet.forms.ITA05_MIMJ" %>
