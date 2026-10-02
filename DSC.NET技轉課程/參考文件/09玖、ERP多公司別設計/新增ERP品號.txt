@@ -1,0 +1,82 @@
+dbUpdateCommand.BeginTransaction();  //交易開始
+
+                        if (resaf01a008.Text == "新增品號")
+                        {
+
+                            //取得品號↓
+                            string new_strReturn = "";
+                            string new_strReturn1 = "";
+
+                            tSQLUpdate.Remove(0, tSQLUpdate.Length);
+                            dbUpdateCommand.ClearParameters();
+
+                            //取得流水號碼數
+                            //strSql_num = string.Format("Select MK010 from [{0}].{1}.dbo.INVMK where MK001='{2}' ", todmERPIp.Trim(), this.resaf01a003.Value.Trim(), resaf01a009.Text);
+                            //object strReturn_num = processor.executeScalar(strSql_num);
+
+
+                            tSQLUpdate.AppendFormat("Select MK010 from [{0}].{1}.dbo.INVMK where MK001='{2}' ", todmERPIp.Trim(), this.resaf01a003.Value.Trim(), resaf01a009.Text);
+                            object strReturn_num = dbUpdateCommand.GetValue(tSQLUpdate.ToString());
+
+                            tSQLUpdate.Remove(0, tSQLUpdate.Length);
+                            dbUpdateCommand.ClearParameters();
+
+                            //品號
+                            string strPrefix = resaf01a030.Text.Trim();
+                            //strSql = string.Format("SELECT ISNULL(MAX(MB001),'') FROM [{0}].{1}.dbo.INVMB where MB001 like '" + strPrefix + "%' and Len(MB001)='" + strReturn_num + "'", todmERPIp.Trim(),
+                            //                     this.resaf01a003.Value.Trim());
+
+
+                            tSQLUpdate.AppendFormat("SELECT ISNULL(MAX(MB001),'') FROM [{0}].{1}.dbo.INVMB where MB001 like '" + strPrefix + "%' and Len(MB001)='" + (strPrefix.Length + Int32.Parse(strReturn_num.ToString())) + "'", todmERPIp.Trim(),
+                                                 this.resaf01a003.Value.Trim());
+                            object strReturn = dbUpdateCommand.GetValue(tSQLUpdate.ToString());
+                            new_strReturn = strReturn.ToString().Trim();
+
+
+                            if (string.IsNullOrEmpty(new_strReturn)) //無該組存在的品號
+                            {
+                                string s_zero = "0000000000000000000000000000000000000000000000000000000";
+                                //new_strReturn1 = strPrefix + intTemp.ToString("''" + s_zero.Substring(0, Int32.Parse(strReturn_num.ToString())) + "''");
+                                new_strReturn = strPrefix + s_zero.Substring(0, Int32.Parse(strReturn_num.ToString())-1) + "1";
+                            }
+                            else
+                            {
+                                new_strReturn = new_strReturn.Trim();
+                                if (new_strReturn.IndexOf(strPrefix) == -1) //防呆  
+                                {
+                                    //new_strReturn = strPrefix.PadRight(strPrefix.Length + Int32.Parse(strReturn_num.ToString()) - 1, '0') + "1";
+                                    string s_zero = "0000000000000000000000000000000000000000000000000000000";
+                                    new_strReturn = strPrefix + s_zero.Substring(0, Int32.Parse(strReturn_num.ToString()) - 1) + "1";
+                                }
+                                else
+                                {
+                                    new_strReturn1 = new_strReturn.Substring(strPrefix.ToString().Length, new_strReturn.ToString().Trim().Length - strPrefix.ToString().Length);
+                                    int intTemp = 0;
+                                    int.TryParse(new_strReturn1, out intTemp);
+                                    intTemp += 1;
+
+                                    //string new_s=strPrefix.PadRight(strPrefix.Length + Int32.Parse(strReturn_num.ToString()), '0');
+                                    //new_s = new_s.Substring(new_s.Length - Int32.Parse(strReturn_num.ToString()));
+                                    string s_zero = "0000000000000000000000000000000000000000000000000000000";
+                                    new_strReturn1 = strPrefix + intTemp.ToString("''" + s_zero.Substring(0, Int32.Parse(strReturn_num.ToString())) + "''");
+                                }
+                            }
+                            //取得品號↑
+
+
+                        }
+if (resaf01a008.Text == "新增品號")
+                        {
+                             if (resaf01a040.Value == "M")
+                             {
+                                    strSql = string.Format(@" Update {0}..resaf01a set resaf01a030= '{1}',resaf01a034='{2}',resaf01a095='{3}' where resaf01a001='{4}' and resaf01a002='{5}' ", UserInfo.Company.Trim(), tresaf01a030, tresaf01a030, tresaf01a030, formID, SheetNo);
+                             }                             
+                             else {
+                                strSql = string.Format(@" Update {0}..resaf01a set resaf01a030= '{1}',resaf01a034='{2}' where resaf01a001='{3}' and resaf01a002='{4}' ", UserInfo.Company.Trim(), tresaf01a030, tresaf01a030, formID, SheetNo);
+                             }
+                            int istrReturn = processor.executeSQL(strSql);//判斷更新幾筆資料
+                            if (istrReturn == 0)
+                            {
+                                throw new Exception("單據不存在，更新不成功!");
+                            }
+                        }

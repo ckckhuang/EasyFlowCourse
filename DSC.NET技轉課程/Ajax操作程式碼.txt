@@ -1,0 +1,19 @@
+作業代號.js
+//前端走Ajax後端執行檢查
+var _universalID = document.getElementById("MasterPage_universalID").value; //universalID
+
+//命名空間.類別名稱.Ajax Function名稱.value;
+var tRet = tw.com.dsc.easyflowDotNet.forms.ITA04.ajaxCheckBodyItem().value;
+
+
+
+作業代號.aspx.cs
+[AjaxPro.AjaxMethod(AjaxPro.HttpSessionStateRequirement.ReadWrite)]
+public bool ajaxCheckBodyItem(string pUniID)
+{
+	bool tRet = false;
+	DscDataObj dscDataObj= Session["ITA04_dataObj_" +pUniID] as DscDataObj; //AJAX函數使用
+
+
+	return tRet;
+}

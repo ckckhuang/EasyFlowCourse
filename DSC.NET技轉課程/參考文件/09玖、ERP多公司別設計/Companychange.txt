@@ -1,0 +1,8 @@
+//公司別下拉選項改變
+function Companychange() {
+    var resaf01a003 = document.getElementById("MasterPage_MasterPageContent_resaf01a003_ddl");
+    if (resaf01a003.value.trim() != "") {
+        document.getElementById('maskDiv1').style.display = ""; //打開遮罩防止USER一值輸入
+        window.location.href = window.location.href.substring(0, window.location.href.indexOf("?", 0)) + "?Company=" + resaf01a003.value.trim();
+    }
+}
